@@ -91,4 +91,9 @@ dependencies {
     implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
     implementation("androidx.core:core:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("androidx.sharetarget:sharetarget:1.2.0-rc01")
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
+
+    //implementation("androidx.lifecycle:lifecycle-extensions:2.6.2")
 }

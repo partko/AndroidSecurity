@@ -69,6 +69,7 @@ fun ItemEntryScreen(
             InventoryTopAppBar(
                 title = stringResource(ItemEntryDestination.titleRes),
                 canNavigateBack = canNavigateBack,
+                canShare = false,
                 navigateUp = onNavigateUp
             )
         }

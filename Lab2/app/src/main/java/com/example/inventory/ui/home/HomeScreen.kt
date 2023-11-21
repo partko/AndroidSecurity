@@ -84,6 +84,7 @@ fun HomeScreen(
             InventoryTopAppBar(
                 title = stringResource(HomeDestination.titleRes),
                 canNavigateBack = false,
+                canShare = false,
                 scrollBehavior = scrollBehavior
             )
         },
