@@ -36,6 +36,8 @@ import androidx.lifecycle.ViewModel
 import com.example.inventory.data.ItemsRepository
 import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.viewModelScope
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.example.inventory.Contact
 import com.example.inventory.Events
 import com.example.inventory.MainActivity

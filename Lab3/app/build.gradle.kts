@@ -20,6 +20,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp") version "1.8.21-1.0.11"
+    kotlin("plugin.serialization") version "1.8.21"
 }
 
 android {
@@ -95,5 +96,7 @@ dependencies {
     implementation("androidx.sharetarget:sharetarget:1.2.0-rc01")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
 
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     //implementation("androidx.lifecycle:lifecycle-extensions:2.6.2")
 }

@@ -56,6 +56,7 @@ import com.example.inventory.data.Item
 import com.example.inventory.ui.AppViewModelProvider
 import com.example.inventory.ui.item.formatedPrice
 import com.example.inventory.ui.navigation.NavigationDestination
+import com.example.inventory.ui.settings.SettingsViewModel
 import com.example.inventory.ui.theme.InventoryTheme
 
 object HomeDestination : NavigationDestination {
@@ -71,9 +72,11 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen(
     navigateToItemEntry: () -> Unit,
+    navigateToSettings: () -> Unit,
     navigateToItemUpdate: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    settingsViewModel: SettingsViewModel
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val homeUiState by viewModel.homeUiState.collectAsState()
@@ -84,7 +87,8 @@ fun HomeScreen(
             InventoryTopAppBar(
                 title = stringResource(HomeDestination.titleRes),
                 canNavigateBack = false,
-                canShare = false,
+                settings = true,
+                navigateToSettings = navigateToSettings,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -106,7 +110,8 @@ fun HomeScreen(
             onItemClick = navigateToItemUpdate,
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
+                .fillMaxSize(),
+            settings = settingsViewModel
         )
     }
 }
@@ -115,7 +120,8 @@ fun HomeScreen(
 private fun HomeBody(
     itemList: List<Item>,
     onItemClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    settings: SettingsViewModel
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -131,7 +137,8 @@ private fun HomeBody(
             InventoryList(
                 itemList = itemList,
                 onItemClick = { onItemClick(it.id) },
-                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
+                settings = settings
             )
         }
     }
@@ -139,21 +146,23 @@ private fun HomeBody(
 
 @Composable
 private fun InventoryList(
-    itemList: List<Item>, onItemClick: (Item) -> Unit, modifier: Modifier = Modifier
+    itemList: List<Item>, onItemClick: (Item) -> Unit, modifier: Modifier = Modifier, settings: SettingsViewModel
 ) {
+    val hideSensitiveData = settings.getBoolPref("hideSensitiveData")
     LazyColumn(modifier = modifier) {
         items(items = itemList, key = { it.id }) { item ->
             InventoryItem(item = item,
                 modifier = Modifier
                     .padding(dimensionResource(id = R.dimen.padding_small))
-                    .clickable { onItemClick(item) })
+                    .clickable { onItemClick(item) },
+                hideSensitiveData = hideSensitiveData)
         }
     }
 }
 
 @Composable
 private fun InventoryItem(
-    item: Item, modifier: Modifier = Modifier
+    item: Item, modifier: Modifier = Modifier, hideSensitiveData: Boolean
 ) {
     Card(
         modifier = modifier,
@@ -167,7 +176,7 @@ private fun InventoryItem(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = item.name + " (" + item.supplierName + ")",
+                    text = item.name + " (" + if(hideSensitiveData) { "*".repeat(item.supplierName.length) } else { item.supplierName } + ")",
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.weight(1f))
@@ -185,39 +194,10 @@ private fun InventoryItem(
                 )
                 Spacer(Modifier.weight(1f))
                 Text(
-                    text = item.supplierEmail,
+                    text = if(hideSensitiveData) { "*".repeat(item.supplierEmail.length) } else { item.supplierEmail },
                     style = MaterialTheme.typography.titleMedium
                 )
             }
-
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeBodyPreview() {
-    InventoryTheme {
-        HomeBody(listOf(
-            Item(1, "Game", 100.0, 20, "oaomegalul", "oao@gmail.com", "+79044114488"), Item(2, "Pen", 200.0, 30, "oaomegalul", "oao@gmail.com", "+79044114488"), Item(3, "TV", 300.0, 50, "oaomegalul", "oao@gmail.com", "+79044114488")
-        ), onItemClick = {})
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeBodyEmptyListPreview() {
-    InventoryTheme {
-        HomeBody(listOf(), onItemClick = {})
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun InventoryItemPreview() {
-    InventoryTheme {
-        InventoryItem(
-            Item(1, "Game", 100.0, 20, "oaomegalul", "oao@gmail.com", "+79044114488"),
-        )
     }
 }

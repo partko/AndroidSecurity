@@ -35,4 +35,9 @@ data class Item(
     val supplierName: String,
     val supplierEmail: String,
     val supplierPhone: String,
+    val methodOfCreation: MethodOfCreation
 )
+
+enum class MethodOfCreation {
+    MANUAL, FILE
+}
